@@ -4,7 +4,10 @@ import { glob } from 'glob'
 import path from 'path'
 import fs from 'fs/promises'
 import ReactDOMServer from 'react-dom/server';
-import { Fragment } from 'react';
+import { Fragment } from 'react'
+import * as prettier from "prettier";
+import Layout from './Layout'
+
 
 import {compile, run, evaluate} from '@mdx-js/mdx'
 
@@ -17,116 +20,136 @@ import { MDXProvider, useMDXComponents } from '@mdx-js/react'
 export interface GenerateConfig {
     inputFolderPath?: string,
     outputFolderPath?: string,
-    workFolderPath?: string,
-}
-
-export function Blog({ children }: { children: React.ReactNode }) {
-    const components = useMDXComponents({
-        Strong,
-    })
-
-    return (
-        <MDXProvider components={components}>{ children }</MDXProvider>
-    )
+    tempFolderPath?: string,
 }
 
 
 export async function generate(config: GenerateConfig = {}): Promise<void> {
-    const content = `
-    # Hello...
-    World! 
-
-    <Strong>Coucou! </Strong>
-    `
-
-    const components = {
-        Strong,
+    const { inputFolderPath, tempFolderPath, outputFolderPath} = {
+        inputFolderPath: './blog/input',
+        outputFolderPath: './blog/output',
+        tempFolderPath: './blog/temp',
+        ...config,
     }
 
-    // @ts-ignore
-    const { default: Content } = await evaluate(content, {
-        ...runtime,
-    })
+    const inputFilePaths = await glob(`${inputFolderPath}/**/*.md`)
+    for (const inputFilePath of inputFilePaths) {
+        console.log(`inputFilePath: ${inputFilePath}`)
 
-    const code = ReactDOMServer.renderToStaticMarkup(
-        <Content components={components}/>
-    )
-
-    console.log('code:', code)
-
-
-    // const { inputFolderPath, workFolderPath, outputFolderPath} = {
-    //     inputFolderPath: './blog/input',
-    //     workFolderPath: './blog/work',
-    //     outputFolderPath: './blog/output',
-    //     ...config,
-    // }
-
-    // const inputFilePaths = await glob(`${inputFolderPath}/**/*.md`)
-    // for (const inputFilePath of inputFilePaths) {
-    //     console.log(`inputFilePath: ${inputFilePath}`)
-    //     const workFolderPath =  path.join(
-    //         (config.workFolderPath ?? "work"),
-    //         "stage-01",
-    //         path.parse(path.relative(inputFolderPath, inputFilePath)).name.replace(' ', '-').toLowerCase(),
-    //     )
-    //     await fs.mkdir(workFolderPath, { recursive: true })
-    //     await esbuild.build({
-    //         entryPoints: [inputFilePath],
-    //         logLevel: 'debug',
-    //         outfile: `${workFolderPath}/Article.js`,
-    //         plugins: [mdx({
-    //             mdExtensions: [],
-    //             mdxExtensions: ['.mdx', '.md'],
-    //         })]
-    //     })
-
+        const pageName = path.parse(inputFilePath).name
         
-    // }
+        console.log(` --> Generating HTML...`)
+        const markdownContent = await fs.readFile(inputFilePath, 'utf-8')
+        // @ts-expect-error
+        const { default: Content } = await evaluate(markdownContent, {
+            ...runtime,
+        })
 
+        const components = {
+            Strong,
+        }
 
+        const htmlContent = ReactDOMServer.renderToString(
+            <Layout pageName={ pageName }>
+                <Content components={components}/>
+            </Layout>
+        )
 
-    // await esbuild.build({
-    //     entryPoints: [`${inputFolderPath}/index.md`],
-    //     logLevel: 'debug',
-    //     outfile: `${outputFolderPath}/tmp/Page.js`,
-    //     plugins: [mdx({
-    //         mdExtensions: [],
-    //         mdxExtensions: ['.mdx', '.md'],
-    //     })]
-    // })
+        const prettyHTMLContent = await prettier.format(htmlContent, { parser: "html" })
 
-    // await esbuild.build({
-    //     entryPoints: [`src/Strong.tsx`],
-    //     logLevel: 'debug',
-    //     outfile: `${outputFolderPath}/tmp/Strong.js`,
-    //     plugins: [mdx({
-    //         mdExtensions: [],
-    //         mdxExtensions: ['.mdx', '.md'],
-    //     })]
-    // })
+        const htmlFilePath = path.join(
+            outputFolderPath,
+            path.relative(inputFolderPath, inputFilePath).replace(/\.mdx?$/, '.html')
+        )
 
-    // await esbuild.build({
-    //     entryPoints: [`src/main.tsx`],
-    //     logLevel: 'debug',
-    //     outfile: `${outputFolderPath}/tmp/main.js`,
-    //     plugins: [mdx({
-    //         mdExtensions: [],
-    //         mdxExtensions: ['.mdx', '.md'],
-    //     })]
-    // })
+        await fs.writeFile(htmlFilePath, prettyHTMLContent, 'utf-8')
 
-    // await esbuild.build({
-    //     entryPoints: [`${outputFolderPath}/tmp/main.js`],
-    //     logLevel: 'debug',
-    //     outfile: `${outputFolderPath}/bundle.js`,
-    //     bundle: true,
-    //     format: 'esm',
-    //     plugins: [mdx({
-    //         mdExtensions: [],
-    //         mdxExtensions: ['.mdx', '.md'],
-    //     })]
-    // })
+        console.log(` --> Generating JS...`)
+        await fs.mkdir(
+            path.join(
+                tempFolderPath ?? "blog/temp",
+                pageName
+            ), 
+            { recursive: true }
+        )
+        
+        const jsxContent = `
+            import ReactDOM from 'react-dom';
+            import { hydrateRoot } from 'react-dom/client'
 
-    // console.log('Done!')
+            import Content from './Content.js'
+            import Layout from './Layout.js'
+            import Strong from './Strong.js'
+
+            const root = document.getElementById("root")
+            hydrateRoot(root, <Content components={ {
+                Strong: Strong,
+            } } />)
+        `
+
+        await esbuild.build({
+            entryPoints: ['./src/Layout.tsx'],
+            logLevel: 'debug',
+            outfile: path.join(
+                tempFolderPath ?? "blog/temp",
+                pageName,
+                "Layout.js",
+            ),
+            plugins: [mdx({
+                mdExtensions: [],
+                mdxExtensions: ['.mdx', '.md'],
+            })]
+        })
+
+        await esbuild.build({
+            entryPoints: ['./src/Strong.tsx'],
+            logLevel: 'debug',
+            outfile: path.join(
+                tempFolderPath ?? "blog/temp",
+                pageName,
+                "Strong.js",
+            ),
+            plugins: [mdx({
+                mdExtensions: [],
+                mdxExtensions: ['.mdx', '.md'],
+            })]
+        })
+
+        const jsxFilePath = path.join(
+            tempFolderPath ?? "blog/temp",
+            pageName,
+            "bundle.jsx",
+        )
+        await fs.writeFile(jsxFilePath, jsxContent, 'utf-8')
+
+        console.log(` --> Compiling Markdown to JS...`)
+        await esbuild.build({
+            entryPoints: [inputFilePath],
+            logLevel: 'debug',
+            outfile: path.join(
+                tempFolderPath ?? "blog/temp",
+                pageName,
+                "Content.js",
+            ),
+            plugins: [mdx({
+                mdExtensions: [],
+                mdxExtensions: ['.mdx', '.md'],
+            })]
+        })
+
+        console.log(` --> Bundleing...`)
+        await esbuild.build({
+            entryPoints: [jsxFilePath],
+            logLevel: 'debug',
+            outfile: path.join(
+                outputFolderPath,
+                `${pageName}.js`,
+            ),
+            bundle: true,
+            plugins: [mdx({
+                mdExtensions: [],
+                mdxExtensions: ['.mdx', '.md'],
+            })]
+        })
+    }
 }
