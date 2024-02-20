@@ -1,0 +1,9 @@
+{
+    "name": "@blog/components",
+    "type": "module",
+    "main": "dist/index.js",
+    "scripts": {
+        "build": "tsc --build && tsc-esm-fix --target='dist'"
+    }
+  }
+  

@@ -1,0 +1,14 @@
+{
+    "name": "@blog/cli",
+    "type": "module",
+    "dependencies": {
+        "@blog/generator": "*"
+    },
+    "bin": {
+      "blog": "./dist/cli.js"
+    },
+    "scripts": {
+        "build": "tsc --build && tsc-esm-fix --target='dist'"
+    }
+  }
+  
