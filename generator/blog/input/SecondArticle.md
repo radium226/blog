@@ -1,3 +1,10 @@
+---
+tags:
+- test
+- test2
+---
+
+
 export const year = 2023
 
 # Last year’s snowfall

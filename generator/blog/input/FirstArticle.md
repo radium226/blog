@@ -1,3 +1,8 @@
+---
+tags: toto
+---
+
+
 export const year = 2023
 
 # Last year’s snowfall

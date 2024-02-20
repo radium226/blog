@@ -7,9 +7,13 @@ import ReactDOMServer from 'react-dom/server';
 import { Fragment } from 'react'
 import * as prettier from "prettier";
 import Layout from './Layout'
+import remarkFrontmatter from 'remark-frontmatter'
 
 
 import {compile, run, evaluate} from '@mdx-js/mdx'
+
+import { read } from 'to-vfile'
+import { matter } from 'vfile-matter'
 
 import * as runtime from 'react/jsx-runtime';
 
@@ -40,9 +44,15 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
         
         console.log(` --> Generating HTML...`)
         const markdownContent = await fs.readFile(inputFilePath, 'utf-8')
+
+        const vfile = await read(inputFilePath)
+        matter(vfile)
+        console.log(vfile.data.matter)
+
         // @ts-expect-error
         const { default: Content } = await evaluate(markdownContent, {
             ...runtime,
+            remarkPlugins: [remarkFrontmatter],
         })
 
         const components = {
@@ -55,7 +65,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             </Layout>
         )
 
-        const prettyHTMLContent = await prettier.format(htmlContent, { parser: "html" })
+        const prettyHTMLContent = `<!DOCTYPE html>\n${htmlContent}`; // await prettier.format(htmlContent, { parser: "html" })
 
         const htmlFilePath = path.join(
             outputFolderPath,
@@ -98,6 +108,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             plugins: [mdx({
                 mdExtensions: [],
                 mdxExtensions: ['.mdx', '.md'],
+                remarkPlugins: [remarkFrontmatter],
             })]
         })
 
@@ -112,6 +123,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             plugins: [mdx({
                 mdExtensions: [],
                 mdxExtensions: ['.mdx', '.md'],
+                remarkPlugins: [remarkFrontmatter],
             })]
         })
 
@@ -134,6 +146,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             plugins: [mdx({
                 mdExtensions: [],
                 mdxExtensions: ['.mdx', '.md'],
+                remarkPlugins: [remarkFrontmatter],
             })]
         })
 
@@ -149,6 +162,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             plugins: [mdx({
                 mdExtensions: [],
                 mdxExtensions: ['.mdx', '.md'],
+                remarkPlugins: [remarkFrontmatter],
             })]
         })
     }

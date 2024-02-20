@@ -1097,7 +1097,7 @@
             var dispatcher = resolveDispatcher();
             return dispatcher.useRef(initialValue);
           }
-          function useEffect(create, deps) {
+          function useEffect2(create, deps) {
             var dispatcher = resolveDispatcher();
             return dispatcher.useEffect(create, deps);
           }
@@ -1879,7 +1879,7 @@
           exports.useContext = useContext;
           exports.useDebugValue = useDebugValue;
           exports.useDeferredValue = useDeferredValue;
-          exports.useEffect = useEffect;
+          exports.useEffect = useEffect2;
           exports.useId = useId;
           exports.useImperativeHandle = useImperativeHandle;
           exports.useInsertionEffect = useInsertionEffect;
@@ -24436,7 +24436,11 @@
 
   // blog/temp/FirstArticle/Strong.js
   var import_jsx_runtime3 = __toESM(require_jsx_runtime(), 1);
+  var import_react = __toESM(require_react(), 1);
   function Strong({ children }) {
+    (0, import_react.useEffect)(() => {
+      alert("Salut les petzouz! ");
+    });
     return /* @__PURE__ */ (0, import_jsx_runtime3.jsx)("strong", { onClick: () => alert("Coucou"), children });
   }
 
