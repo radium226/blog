@@ -1,11 +1,11 @@
 {
-  "name": "generator",
+  "name": "blog-generator",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc --build && chmod +x './dist/cli.js'",
+    "build": "tsc --build && tsc-esm-fix --target='dist' && chmod +x './dist/cli.js'",
     "clean": "rimraf './dist'"
   },
   "author": "",
@@ -13,12 +13,22 @@
   "dependencies": {
     "@mdx-js/esbuild": "^3.0.1",
     "@mdx-js/mdx": "^3.0.1",
+    "@mdx-js/react": "^3.0.1",
     "@types/react": "^18.2.56",
+    "beauty-html": "^1.3.1",
     "cmd-ts": "^0.13.0",
     "esbuild": "^0.20.1",
+    "glob": "^10.3.10",
+    "html-prettify": "^1.0.7",
+    "htmltidy2": "^1.2.0",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "typescript": "^5.3.3"
+    "remark-frontmatter": "^5.0.0",
+    "to-vfile": "^8.0.0",
+    "tsc-esm-fix": "^2.20.25",
+    "typescript": "^5.3.3",
+    "vfile-matter": "^5.0.0"
   },
   "bin": {
     "blog-generator": "./dist/cli.js"
@@ -26,6 +36,5 @@
   "devDependencies": {
     "@types/node": "^20.11.19",
     "@types/react-dom": "^18.2.19"
-  },
-  "exports": "./dist/index.js"
+  }
 }

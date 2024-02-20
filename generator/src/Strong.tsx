@@ -1,10 +1,13 @@
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 
 export interface StrongProps {
 }
 
 export default function Strong({ children }: PropsWithChildren<StrongProps>) {
+    useEffect(() => {
+        alert("Salut les petzouz! ")
+    })
     return (
-        <strong>{ children }</strong>
+        <strong onClick={ () => alert("Coucou") }>{ children }</strong>
     )
 }
