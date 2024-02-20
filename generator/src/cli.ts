@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { command, run, string, positional } from 'cmd-ts';
-import { generate } from './generate.js';
+import { generate } from './generate';
 
 const app = command({
   name: 'blog-generator',
