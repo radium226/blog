@@ -1,0 +1,13 @@
+{
+    "name": "@blog/generator",
+    "type": "module",
+    "main": "dist/index.js",
+    "dependencies": {
+        "@blog/layout": "*",
+        "@blog/components": "*"
+    },
+    "scripts": {
+        "build": "tsc --build && tsc-esm-fix --target='dist'"
+    }
+  }
+  

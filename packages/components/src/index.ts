@@ -1,0 +1,1 @@
+export { default as Strong, StrongProps } from './Strong'
