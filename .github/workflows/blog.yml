@@ -17,7 +17,7 @@ jobs:
     - run: echo "${{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519"
     - run: git clone --filter="blob:none" --sparse "${{ secrets.OBSIDIAN_GIT_REPO }}" "./obsidian"
       env:
-        GIT_SSH_COMMAND: ssh -i "../obsidian-id_ed25519" -o IdentitiesOnly="yes"
+        GIT_SSH_COMMAND: ssh -i "./obisidian-id_ed25519" -o IdentitiesOnly="yes"
     - run: git -C "./obsidian" sparse-checkout add "./Blog/Articles"
     # Setting up Node
     - uses: actions/setup-node@v3
