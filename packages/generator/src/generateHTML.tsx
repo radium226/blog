@@ -18,7 +18,7 @@ export async function generateHTML(markdownFilePath: string, outputFolderPath: s
     })
 
     const slug = slugify(markdownFilePath)
-    const htmlContent = renderToString(
+    const htmlContent = "<!DOCTYPE html>\n" + renderToString(
         <Layout slug={slug}>
             <Content components={ components } />
         </Layout>

@@ -7,6 +7,6 @@ export interface StrongProps {
 
 export default function String({ children }: StrongProps) {
     return (
-        <strong>{ children }</strong>
+        <strong onClick={() => alert("Salut! ") }>{ children }</strong>
     )
 }

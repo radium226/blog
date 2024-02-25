@@ -24402,6 +24402,7 @@
   });
 
   // ../../../../../tmp/second-article.jsx
+  var import_react = __toESM(require_react());
   var import_client = __toESM(require_client());
 
   // ../../../../../tmp/Content.js
@@ -24446,12 +24447,12 @@
   // packages/components/dist/Strong.js
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function String2({ children }) {
-    return (0, import_jsx_runtime2.jsx)("strong", { children });
+    return (0, import_jsx_runtime2.jsx)("strong", { onClick: () => alert("Salut les petzouz! "), children });
   }
 
   // ../../../../../tmp/second-article.jsx
   var root = document.getElementById("root");
-  (0, import_client.hydrateRoot)(root, /* @__PURE__ */ React.createElement(MDXContent, { components: dist_exports }));
+  (0, import_client.hydrateRoot)(root, /* @__PURE__ */ import_react.default.createElement(import_react.StrictMode, null, /* @__PURE__ */ import_react.default.createElement(MDXContent, { components: dist_exports })));
 })();
 /*! Bundled license information:
 

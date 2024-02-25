@@ -18,13 +18,14 @@ export async function generateJS(markdownFilePath: string, outputFolderPath: str
     fs.writeFile("/tmp/Content.js", reactContent, 'utf-8')
 
     const jsxContent = dedent(`
+        import React, { StrictMode } from 'react'
         import { hydrateRoot } from 'react-dom/client'
         import Content from './Content.js'
 
         import * as components from '@blog/components'
 
         const root = document.getElementById("root")
-        hydrateRoot(root, <Content components={ components } />)
+        hydrateRoot(root, <StrictMode><Content components={ components } /></StrictMode>)
     `)
 
     const slug = slugify(markdownFilePath)

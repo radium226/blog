@@ -12,9 +12,13 @@ export default function Layout({ title, slug, children }: LayoutProps) {
         <html>
             <head>
                 <title>{ title ?? slug }</title>
+                <link
+                    rel="stylesheet"
+                    href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+                />
             </head>
             <body>
-                <main>
+                <main id="root">
                     {children}
                 </main>
                 <script src={ `${slug}.js` }></script>
