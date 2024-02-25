@@ -29,6 +29,6 @@ jobs:
     - run: npm --prefix="./generator" run build
     # Generating the articles
     - run: mkdir "./pages"
-    - run: npm --prefix="./generator" --workspace="packages/cli" exec blog -- "../obsidian/Blog/Articles" "../pages"
+    - run: npm --prefix="./generator" --workspace="packages/cli" exec blog -- "../../../obsidian/Blog/Articles" "../../../pages"
     - run: find "./pages" -type "f"
     # Committing the articles
