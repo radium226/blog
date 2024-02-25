@@ -96,7 +96,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
                 Strong: Strong,
             } } />)
         `
-
+        console.log("Building Layout")
         await esbuild.build({
             entryPoints: ['./src/Layout.tsx'],
             logLevel: 'debug',
@@ -112,6 +112,7 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             })]
         })
 
+        console.log("Building Strong")
         await esbuild.build({
             entryPoints: ['./src/Strong.tsx'],
             logLevel: 'debug',
@@ -132,9 +133,8 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             pageName,
             "bundle.jsx",
         )
-        await fs.writeFile(jsxFilePath, jsxContent, 'utf-8')
-
-        console.log(` --> Compiling Markdown to JS...`)
+        
+        console.log(` --> Building Content...`)
         await esbuild.build({
             entryPoints: [inputFilePath],
             logLevel: 'debug',
@@ -150,7 +150,8 @@ export async function generate(config: GenerateConfig = {}): Promise<void> {
             })]
         })
 
-        console.log(` --> Bundleing...`)
+        console.log(` --> Building bundle...`)
+        await fs.writeFile(jsxFilePath, jsxContent, 'utf-8')
         await esbuild.build({
             entryPoints: [jsxFilePath],
             logLevel: 'debug',

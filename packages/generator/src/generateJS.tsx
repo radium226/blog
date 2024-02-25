@@ -19,7 +19,7 @@ export async function generateJS(markdownFilePath: string, outputFolderPath: str
 
     const jsxContent = dedent(`
         import { hydrateRoot } from 'react-dom/client'
-        import { Content } from './Content.js'
+        import Content from './Content.js'
 
         import * as components from '@blog/components'
 
@@ -34,8 +34,11 @@ export async function generateJS(markdownFilePath: string, outputFolderPath: str
     fs.writeFile(tempFilePath, jsxContent, 'utf-8')
     const outputFilePath = path.join(outputFolderPath, `${slug}.js`)
 
+    const nodePath = path.join(__dirname, "..", "..", "..", "node_modules")
+    console.log(nodePath)
+
     await esbuild.build({
-        nodePaths: [path.join(__dirname, "..", "node_modules")],
+        nodePaths: [nodePath],
         entryPoints: [tempFilePath],
         logLevel: 'debug',
         outfile: outputFilePath,
