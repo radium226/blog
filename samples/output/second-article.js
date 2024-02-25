@@ -24447,7 +24447,7 @@
   // packages/components/dist/Strong.js
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function String2({ children }) {
-    return (0, import_jsx_runtime2.jsx)("strong", { onClick: () => alert("Salut les petzouz! "), children });
+    return (0, import_jsx_runtime2.jsx)("strong", { onClick: () => alert("Salut! "), children });
   }
 
   // ../../../../../tmp/second-article.jsx

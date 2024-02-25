@@ -24409,6 +24409,7 @@
   var import_jsx_runtime = __toESM(require_jsx_runtime());
   function _createMdxContent(props) {
     const _components = {
+      blockquote: "blockquote",
       h1: "h1",
       p: "p",
       ...props.components
@@ -24420,8 +24421,14 @@
         children: "Hello"
       }), "\n", (0, import_jsx_runtime.jsx)(_components.p, {
         children: "This is a test"
-      }), "\n", (0, import_jsx_runtime.jsx)(Strong, {
-        children: "Yay ! "
+      }), "\n", (0, import_jsx_runtime.jsxs)(Strong, {
+        children: [(0, import_jsx_runtime.jsx)(_components.h1, {
+          children: "This is another test"
+        }), (0, import_jsx_runtime.jsxs)(_components.blockquote, {
+          children: ["\n", (0, import_jsx_runtime.jsx)(_components.p, {
+            children: "I don't know..."
+          }), "\n"]
+        })]
       })]
     });
   }
@@ -24447,7 +24454,7 @@
   // packages/components/dist/Strong.js
   var import_jsx_runtime2 = __toESM(require_jsx_runtime(), 1);
   function String2({ children }) {
-    return (0, import_jsx_runtime2.jsx)("strong", { onClick: () => alert("Salut les petzouz! "), children });
+    return (0, import_jsx_runtime2.jsx)("strong", { onClick: () => alert("Salut! "), children });
   }
 
   // ../../../../../tmp/first-article.jsx
