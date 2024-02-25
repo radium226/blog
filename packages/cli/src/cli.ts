@@ -13,8 +13,9 @@ const app = command({
   handler: async ({ inputFolderPath, outputFolderPath }) => {
     const inputFilePaths = await glob(`${inputFolderPath}/*.md`, { absolute: true })
     for (const inputFilePath of inputFilePaths) {
-        await generateHTML(inputFilePath, outputFolderPath)
-        await generateJS(inputFilePath, outputFolderPath)
+      console.log(`Processing ${inputFilePath}... `)
+      await generateHTML(inputFilePath, outputFolderPath)
+      await generateJS(inputFilePath, outputFolderPath)
     }
   },
 })
