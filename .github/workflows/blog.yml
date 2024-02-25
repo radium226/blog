@@ -19,7 +19,7 @@ jobs:
       env:
         GIT_SSH_COMMAND: ssh -i "./obisidian-id_ed25519" -o StrictHostKeyChecking="no" -o IdentitiesOnly="yes"
     - run: git -C "./obsidian" sparse-checkout add "./Blog/Articles"
-    - run: find "./obsidian" -type "f"
+    - run: find "./obsidian/Blog/Articles" -type "f"
     # Setting up Node
     - uses: actions/setup-node@v3
       with:
