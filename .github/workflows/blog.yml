@@ -14,7 +14,7 @@ jobs:
         path: "./generator"
     # Checkout the Obsidian repository, but only for the articles
     - run: mkdir "./obsidian"
-      run: echo "{{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519"
+    - run: echo "{{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519"
     - run: git clone --filter="blob:none" --sparse "{{ secrets.OBSIDIAN_GIT_REPO }}" "./obsidian"
       env:
         GIT_SSH_COMMAND: ssh -i "./obsidian-id_ed25519" -o IdentitiesOnly="yes"
