@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
+      pages: write
     steps:
     # Checkout the generator
     - uses: actions/checkout@v4
