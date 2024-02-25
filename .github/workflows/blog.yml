@@ -7,6 +7,8 @@ jobs:
   blog:
     name: blog
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
     # Checkout the generator
     - uses: actions/checkout@v4
