@@ -7,6 +7,9 @@ jobs:
   blog:
     name: blog
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      pages: write
     steps:
     # Checkout the generator
     - uses: actions/checkout@v4
@@ -14,19 +17,25 @@ jobs:
         path: "./generator"
     # Checkout the Obsidian repository, but only for the articles
     - run: mkdir "./obsidian"
-      run: echo "{{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519"
-    - run: git clone --filter="blob:none" --sparse "{{ secrets.OBSIDIAN_GIT_REPO }}" "./obsidian"
+    - run: echo "${{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519" && chmod 600 "./obisidian-id_ed25519"
+    - run: git clone --filter="blob:none" --sparse "${{ secrets.OBSIDIAN_GIT_REPO }}" "./obsidian"
       env:
-        GIT_SSH_COMMAND: ssh -i "./obsidian-id_ed25519" -o IdentitiesOnly="yes"
+        GIT_SSH_COMMAND: ssh -i "./obisidian-id_ed25519" -o StrictHostKeyChecking="no" -o IdentitiesOnly="yes"
     - run: git -C "./obsidian" sparse-checkout add "./Blog/Articles"
+    - run: find "./obsidian/Blog/Articles" -type "f"
     # Setting up Node
     - uses: actions/setup-node@v3
       with:
         node-version: 21.6
     # Building the generator
     - run: npm --prefix="./generator" install
-    - run: npm --prefix="./generator" build
+    - run: npm --prefix="./generator" run build
     # Generating the articles
     - run: mkdir "./pages"
-    - run: npm --prefix="./generator" exec blog -- "../obsidian/Blog/Articles" "../pages"
-    # Committing the articles
+    - run: npm --prefix="./generator" --workspace="packages/cli" exec blog -- "../../../obsidian/Blog/Articles" "../../../pages"
+    - run: find "./pages" -type "f"
+    # Deploying the pages
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: "./pages"
+    - uses: actions/deploy-pages@v4

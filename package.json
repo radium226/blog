@@ -3,7 +3,10 @@
   "private": true,
   "version": "1.0.0",
   "workspaces": [
-    "packages/*"
+    "packages/components",
+    "packages/layout",
+    "packages/generator",
+    "packages/cli"
   ],
   "scripts": {
     "clean": "npm run clean --workspaces --if-present",
