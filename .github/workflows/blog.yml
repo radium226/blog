@@ -19,13 +19,14 @@ jobs:
       env:
         GIT_SSH_COMMAND: ssh -i "./obisidian-id_ed25519" -o StrictHostKeyChecking="no" -o IdentitiesOnly="yes"
     - run: git -C "./obsidian" sparse-checkout add "./Blog/Articles"
+    - run: find "./obsidian" -type "f"
     # Setting up Node
     - uses: actions/setup-node@v3
       with:
         node-version: 21.6
     # Building the generator
     - run: npm --prefix="./generator" install
-    - run: npm --prefix="./generator" build
+    - run: npm --prefix="./generator" run build
     # Generating the articles
     - run: mkdir "./pages"
     - run: npm --prefix="./generator" exec blog -- "../obsidian/Blog/Articles" "../pages"
