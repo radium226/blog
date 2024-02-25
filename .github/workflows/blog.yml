@@ -1,0 +1,32 @@
+---
+name: blog
+on:
+  workflow_dispatch:
+
+jobs:
+  blog:
+    name: blog
+    runs-on: ubuntu-latest
+    steps:
+    # Checkout the generator
+    - uses: actions/checkout@v4
+      with:
+        path: "./generator"
+    # Checkout the Obsidian repository, but only for the articles
+    - run: mkdir "./obsidian"
+      run: echo "{{ secrets.OBSIDIAN_SSH_PRIVATE_KEY }}" > "./obisidian-id_ed25519"
+    - run: git clone --filter="blob:none" --sparse "{{ secrets.OBSIDIAN_GIT_REPO }}" "./obsidian"
+      env:
+        GIT_SSH_COMMAND: ssh -i "./obsidian-id_ed25519" -o IdentitiesOnly="yes"
+    - run: git -C "./obsidian" sparse-checkout add "./Blog/Articles"
+    # Setting up Node
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 21.6
+    # Building the generator
+    - run: npm --prefix="./generator" install
+    - run: npm --prefix="./generator" build
+    # Generating the articles
+    - run: mkdir "./pages"
+    - run: npm --prefix="./generator" exec blog -- "../obsidian/Blog/Articles" "../pages"
+    # Committing the articles
