@@ -31,4 +31,8 @@ jobs:
     - run: mkdir "./pages"
     - run: npm --prefix="./generator" --workspace="packages/cli" exec blog -- "../../../obsidian/Blog/Articles" "../../../pages"
     - run: find "./pages" -type "f"
-    # Committing the articles
+    # Deploying the pages
+    - uses: actions/upload-pages-artifact@v3
+      with:
+        path: "./pages"
+    - uses: actions/deploy-pages@v4
