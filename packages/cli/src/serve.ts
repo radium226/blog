@@ -30,18 +30,10 @@ export async function serve(host: string, port: number, inputFolderPath: string)
             const requestedSlug = path.parse(request.url).name
             const inputFilePaths: string[] = await glob(`${inputFolderPath}/*.md`, { absolute: true })
             const articles: Article[] = await Promise.all(inputFilePaths
-                .map((inputFilePath) => ({ 
-                    inputFilePath, 
+                .map(async (inputFilePath) => ({ 
+                    markdownContent: await fs.readFile(inputFilePath, 'utf-8'),
                     slug: slugify(path.parse(inputFilePath).name)
-                }))
-                .filter(({ slug }) => slug === requestedSlug)
-                .map(async ({ slug, inputFilePath }) => {
-                    const markdownContent = await fs.readFile(inputFilePath, 'utf-8')
-                    return {
-                      slug,
-                      markdownContent,
-                    }
-                  }))
+                })))
             
             await generateWebsite(articles, tempFolderPath)
 

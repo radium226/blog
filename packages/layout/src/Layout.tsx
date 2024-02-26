@@ -1,13 +1,15 @@
 import { ReactNode } from 'react';
+import { Article } from '@blog/domain';
 
 
 export interface LayoutProps {
     children: ReactNode
     title?: string
     slug: string
+    articles: Article[]
 }
 
-export default function Layout({ title, slug, children }: LayoutProps) {
+export default function Layout({ articles, title, slug, children }: LayoutProps) {
     return (
         <html>
             <head>
@@ -18,8 +20,21 @@ export default function Layout({ title, slug, children }: LayoutProps) {
                 />
             </head>
             <body>
-                <main id="root">
-                    {children}
+                <main>
+                    <aside>
+                        <nav>
+                            <ul>
+                                { articles.map(({ slug }) =>
+                                    <li>
+                                        <a href={ `/${slug}.html` }>{ slug }</a>
+                                    </li>
+                                ) }
+                            </ul>
+                        </nav>
+                    </aside>
+                    <section id="root">
+                        {children}
+                    </section>
                 </main>
                 <script type="module" src={ `${slug}.js` }></script>
             </body>

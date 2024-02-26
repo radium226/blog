@@ -59,7 +59,7 @@ export async function generateWebsite(articles: Article[], outputFolderPath: str
             ...runtime,
         })
         const htmlContent = "<!DOCTYPE html>\n" + renderToString(
-            <Layout slug={slug}>
+            <Layout articles={ articles } slug={slug}>
                 <Content components={ components } />
             </Layout>
         )
