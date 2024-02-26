@@ -32,7 +32,7 @@ export async function generateWebsite(articles: Article[], outputFolderPath: str
             import * as components from '@blog/components'
 
             const root = document.getElementById("root")
-            hydrateRoot(root, <StrictMode><${compnentName} components={ components } /></StrictMode>)
+            hydrateRoot(root, <StrictMode><Content components={ components } /></StrictMode>)
         `)
         const mainContentFilePath = path.join(tempFolderPath, `${slug}.jsx`)
         console.log("Writing to: ", mainContentFilePath)

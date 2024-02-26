@@ -21,7 +21,7 @@ export default function Layout({ title, slug, children }: LayoutProps) {
                 <main id="root">
                     {children}
                 </main>
-                <script src={ `${slug}.js` }></script>
+                <script type="module" src={ `${slug}.js` }></script>
             </body>
         </html>
     )
