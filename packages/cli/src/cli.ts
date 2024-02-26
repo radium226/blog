@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
 import { command, run, string, positional } from 'cmd-ts';
-import { generateHTML, generateJS } from '@blog/generator';
+import { generateWebsite } from '@blog/generator';
+import { Article } from '@blog/domain';
 import { glob } from 'glob'
+import fs from 'fs/promises'
+import { slugify } from './slugify';
+import path from 'path';
 
 const app = command({
   name: 'blog',
@@ -11,12 +15,17 @@ const app = command({
     outputFolderPath: positional({ type: string }),
   },
   handler: async ({ inputFolderPath, outputFolderPath }) => {
-    const inputFilePaths = await glob(`${inputFolderPath}/*.md`, { absolute: true })
-    for (const inputFilePath of inputFilePaths) {
-      console.log(`Processing ${inputFilePath}... `)
-      await generateHTML(inputFilePath, outputFolderPath)
-      await generateJS(inputFilePath, outputFolderPath)
-    }
+    const inputFilePaths: string[] = await glob(`${inputFolderPath}/*.md`, { absolute: true })
+    const articles: Article[] = await Promise.all(inputFilePaths
+      .map(async (inputFilePath) => {
+        const markdownContent = await fs.readFile(inputFilePath, 'utf-8')
+        return {
+          slug: slugify(path.parse(inputFilePath).name),
+          markdownContent,
+        }
+      }))
+
+    generateWebsite(articles, outputFolderPath)
   },
 })
 
