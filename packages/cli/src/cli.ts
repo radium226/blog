@@ -16,6 +16,7 @@ const app = command({
   },
   handler: async ({ inputFolderPath, outputFolderPath }) => {
     const inputFilePaths: string[] = await glob(`${inputFolderPath}/*.md`, { absolute: true })
+    console.log("inputFilePaths: ", inputFilePaths)
     const articles: Article[] = await Promise.all(inputFilePaths
       .map(async (inputFilePath) => {
         const markdownContent = await fs.readFile(inputFilePath, 'utf-8')
