@@ -2,7 +2,8 @@
     "name": "@blog/cli",
     "type": "module",
     "dependencies": {
-        "@blog/generator": "*"
+        "@blog/generator": "*",
+        "@blog/domain": "*"
     },
     "bin": {
       "blog": "./dist/cli.js"

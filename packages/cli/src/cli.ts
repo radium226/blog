@@ -1,23 +1,52 @@
 #!/usr/bin/env node
 
-import { command, run, string, positional } from 'cmd-ts';
-import { generateHTML, generateJS } from '@blog/generator';
-import { glob } from 'glob'
+import { command, run, string, number, positional, subcommands, option } from 'cmd-ts';
 
-const app = command({
-  name: 'blog',
+import { serve } from './serve';
+import { generate } from './generate';
+
+
+const serveCommand = command({
+  name: 'serve',
+  args: {
+    host: option({ 
+      type: string, 
+      long: 'host', 
+      short: 'h', 
+      defaultValue: () => 'localhost', 
+    }),
+    port: option({ 
+      type: number, 
+      long: 'port', 
+      short: 'p', 
+      defaultValue: () => 8765, 
+    }),
+    inputFolderPath: positional({
+      type: string, 
+    }),
+  },
+  handler: async ({ host, port, inputFolderPath }) => {
+    await serve(host, port, inputFolderPath)
+  },
+})
+
+const generateCommand = command({
+  name: 'generate',
   args: {
     inputFolderPath: positional({ type: string }),
     outputFolderPath: positional({ type: string }),
   },
   handler: async ({ inputFolderPath, outputFolderPath }) => {
-    const inputFilePaths = await glob(`${inputFolderPath}/*.md`, { absolute: true })
-    for (const inputFilePath of inputFilePaths) {
-      console.log(`Processing ${inputFilePath}... `)
-      await generateHTML(inputFilePath, outputFolderPath)
-      await generateJS(inputFilePath, outputFolderPath)
-    }
+    await generate(inputFolderPath, outputFolderPath)
   },
 })
+
+const app = subcommands({
+  name: 'blog',
+  cmds: { 
+    'serve': serveCommand, 
+    'generate': generateCommand, 
+  },
+});
 
 run(app, process.argv.slice(2))
