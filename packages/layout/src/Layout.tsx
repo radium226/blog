@@ -7,9 +7,10 @@ export interface LayoutProps {
     title?: string
     slug: string
     articles: Article[]
+    baseURL?: string
 }
 
-export default function Layout({ articles, title, slug, children }: LayoutProps) {
+export default function Layout({ baseURL, articles, title, slug, children }: LayoutProps) {
     return (
         <html>
             <head>
@@ -26,7 +27,7 @@ export default function Layout({ articles, title, slug, children }: LayoutProps)
                             <ul>
                                 { articles.map(({ slug }) =>
                                     <li>
-                                        <a href={ `/${slug}.html` }>{ slug }</a>
+                                        <a href={ `./${slug}.html` }>{ slug }</a>
                                     </li>
                                 ) }
                             </ul>
