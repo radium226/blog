@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import { existsSync } from 'fs';
 import { createServer } from 'http';
 import path from 'path'
-import { slugify } from './slugify';
+import slugify from 'slugify'
 import { glob } from 'glob'
 import { Article } from '@blog/domain'
 import { generateWebsite } from '@blog/generator';
@@ -32,7 +32,10 @@ export async function serve(host: string, port: number, inputFolderPath: string)
             const articles: Article[] = await Promise.all(inputFilePaths
                 .map(async (inputFilePath) => ({ 
                     markdownContent: await fs.readFile(inputFilePath, 'utf-8'),
-                    slug: slugify(path.parse(inputFilePath).name)
+                    slug: slugify(path.parse(inputFilePath).name, {
+                        remove: /[*+~.()'"!:@]/g,
+                        lower: true,
+                    })
                 })))
             
             await generateWebsite(articles, tempFolderPath)
